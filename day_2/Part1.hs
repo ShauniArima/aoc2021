@@ -12,17 +12,17 @@ data Command    = Forward Integer | Down Integer | Up Integer deriving (Eq)
 main :: IO ()
 main = do
     inputFile <- readFile "input"
-    let (Right directions) = parse parser "" inputFile
+    let (Right commands) = parse parser "" inputFile
     print "Part One:"
-    print (computeAnswer directions)
+    print (computeAnswer commands)
 
 {- Compute answer -}
 computeAnswer :: [Command] -> Integer
-computeAnswer directions = uncurry (*) (computeMovement directions)
+computeAnswer commands = uncurry (*) (computeMovement commands)
 
 {- Compute movement -}
 computeMovement :: [Command] -> Position
-computeMovement directions = foldr addVectors (0, 0) (commandsToVectors directions)
+computeMovement commands = foldr addVectors (0, 0) (commandsToVectors commands)
 
 {- Commands to positions -}
 commandsToVectors :: [Command] -> [Vector]
@@ -41,15 +41,15 @@ addVectors (h1, d1) (h2, d2) = (h1 + h2, d1 + d2)
 {- Parse input -}
 parser :: Parsec String () [Command]
 parser = do
-    (do directionString <- many1 letter
+    (do commandstring <- many1 letter
         space
-        getDirection directionString <$> number) `sepEndBy` newline
+        getCommand commandstring <$> number) `sepEndBy` newline
 
 number :: Parser Integer
 number = read <$> many1 digit
 
-getDirection :: String -> Integer  -> Command
-getDirection "up" x    = Up x
-getDirection "forward" x = Forward x
-getDirection "down" x    = Down x
-getDirection s _         = error $ "Invalid input : " ++ s
+getCommand :: String -> Integer  -> Command
+getCommand "up" x    = Up x
+getCommand "forward" x = Forward x
+getCommand "down" x    = Down x
+getCommand s _         = error $ "Invalid input : " ++ s
