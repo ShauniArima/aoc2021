@@ -5,7 +5,7 @@ import Text.Parsec
 import Text.Parsec.String
 
 type Position       = (Integer, Integer)
-type SubmarimeState = (Integer, Integer, Integer)
+type SubmarineState = (Integer, Integer, Integer)
 
 data Command =    Forward Integer
                     | Down Integer
@@ -26,16 +26,16 @@ computeFinalPosition :: [Command] -> Position
 computeFinalPosition commands = (stateToPosition . foldl computeState (0, 0, 0)) (commandsToStates commands)
 
 
-stateToPosition :: SubmarimeState -> Position
+stateToPosition :: SubmarineState -> Position
 stateToPosition (h, d, _) = (h, d) 
 
-computeState :: SubmarimeState -> SubmarimeState -> SubmarimeState
+computeState :: SubmarineState -> SubmarineState -> SubmarineState
 computeState (h1, d1, aim1) (h2, d2, aim2) = (h1 + h2, d1 + (d2 * aim1), aim1 + aim2)
 
-commandsToStates :: [Command] -> [SubmarimeState]
+commandsToStates :: [Command] -> [SubmarineState]
 commandsToStates = map commandToState
 
-commandToState :: Command -> SubmarimeState
+commandToState :: Command -> SubmarineState
 commandToState (Forward value) = (value, value, 0)
 commandToState (Up value) = (0, 0, -value)
 commandToState (Down value) = (0, 0, value)
